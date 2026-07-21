@@ -1,3 +1,9 @@
 #!/usr/bin/env ruby
-require_relative "../config/boot"
+require "rubygems"
+require "bundler/setup"
+
+# importmap-rails defines the top-level Importmap module
+require "importmap-rails"
+# Map must be loaded before commands (packager references Importmap::Map::PIN_REGEX)
+require "importmap/map"
 require "importmap/commands"
