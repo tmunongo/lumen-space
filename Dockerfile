@@ -11,6 +11,15 @@
 ARG RUBY_VERSION=4.0.6
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
+# App version injected by CI (make bump-* / GitHub Actions)
+ARG APP_VERSION=dev
+LABEL org.opencontainers.image.title="Lumen Space" \
+      org.opencontainers.image.description="Local-first research companion" \
+      org.opencontainers.image.source="https://github.com/tmunongo/lumen-space" \
+      org.opencontainers.image.version="$APP_VERSION" \
+      org.opencontainers.image.licenses="MIT"
+
+
 # Rails app lives here
 WORKDIR /rails
 
