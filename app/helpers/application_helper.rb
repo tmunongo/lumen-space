@@ -39,6 +39,16 @@ module ApplicationHelper
     processed.html_safe
   end
 
+  def app_version
+    @app_version ||= ENV['APP_VERSION'].presence ||
+      (File.exist?(Rails.root.join('VERSION')) ? File.read(Rails.root.join('VERSION')).strip : '0.1.0')
+  end
+
+  def app_build_date
+    @app_build_date ||= ENV['BUILD_DATE'].presence ||
+      (File.exist?(Rails.root.join('VERSION')) ? File.mtime(Rails.root.join('VERSION')).strftime('%b %d, %Y') : Time.current.strftime('%b %d, %Y'))
+  end
+
   private
 
   def replace_in_text_nodes(html, search, replacement)

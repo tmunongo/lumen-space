@@ -6,6 +6,7 @@
       <%= link_to @project, class: 'sidebar__back' do %>← <%= @project.name %><% end %>
     </div>
     <%= render 'artifacts/artifact_meta', artifact: @artifact, project: @project %>
+    <%= render 'shared/footer' %>
   </aside>
 
   <!-- Reader -->
