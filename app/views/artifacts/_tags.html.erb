@@ -1,0 +1,20 @@
+<div class="tag-editor" data-controller="tag-editor" id="artifact_<%= artifact.id %>_tags">
+  <div class="tag-list">
+    <% artifact.tag_names.each do |tag| %>
+      <span class="tag">
+        <%= tag %>
+        <%= button_to '×', remove_tag_project_artifact_path(project, artifact, tag_name: tag),
+            method: :delete, class: 'tag__remove', data: { turbo_stream: true } %>
+      </span>
+    <% end %>
+  </div>
+  <div class="tag-input-group" data-tag-editor-target="inputGroup">
+    <input type="text" class="input input--xs" placeholder="Add tag..." maxlength="50"
+           data-tag-editor-target="input" data-action="keydown.enter->tag-editor#add">
+    <button class="btn btn--ghost btn--xs" data-action="click->tag-editor#add">+</button>
+    <form method="post" data-tag-editor-target="form" action="<%= add_tag_project_artifact_path(project, artifact) %>" style="display:none;">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <input type="hidden" name="tag_name" data-tag-editor-target="hiddenInput">
+    </form>
+  </div>
+</div>

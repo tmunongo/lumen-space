@@ -1,0 +1,77 @@
+<% content_for :title, 'Projects' %>
+<div class="app-shell" data-controller="app">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__header">
+      <div class="sidebar__brand">
+        <span class="sidebar__logo">◉</span>
+        <span class="sidebar__brand-name">Lumen Space</span>
+      </div>
+    </div>
+
+    <div class="sidebar__actions">
+      <%= form_with model: @project, url: projects_path, data: { turbo: true }, html: { id: 'new-project-form', class: 'new-project-form' } do |f| %>
+        <div class="input-group">
+          <%= f.text_field :name, placeholder: 'New project name...', class: 'input input--sm', autofocus: true, id: 'new-project-input', data: { 'app-target': 'newProjectInput' } %>
+          <%= f.submit '+', class: 'btn btn--icon btn--primary', title: 'Create project (⌘N)' %>
+        </div>
+        <% if @project.errors.any? %>
+          <p class="form-error"><%= @project.errors.full_messages.first %></p>
+        <% end %>
+      <% end %>
+
+      <div class="sidebar__controls">
+        <div class="sort-controls">
+          <%= link_to '↕', projects_path(sort_by: 'name'), class: "btn btn--ghost btn--xs #{'active' if session[:sort_by] == 'name'}", title: 'Sort by name', data: { turbo_stream: true } %>
+          <%= link_to '⏱', projects_path(sort_by: 'modified'), class: "btn btn--ghost btn--xs #{'active' if session[:sort_by].blank? || session[:sort_by] == 'modified'}", title: 'Sort by modified', data: { turbo_stream: true } %>
+          <%= link_to '📅', projects_path(sort_by: 'created'), class: "btn btn--ghost btn--xs #{'active' if session[:sort_by] == 'created'}", title: 'Sort by created', data: { turbo_stream: true } %>
+        </div>
+        <%= link_to (@show_archived ? 'Hide archived' : 'Show archived'), projects_path(show_archived: !@show_archived), class: 'btn btn--ghost btn--xs', data: { turbo_stream: true } %>
+      </div>
+    </div>
+
+    <nav class="sidebar__nav">
+      <ul class="project-list" id="project-list">
+        <% if @projects.any? %>
+          <%= render partial: 'projects/project_item', collection: @projects, as: :project %>
+        <% else %>
+          <li class="empty-state">
+            <span class="empty-state__icon">📂</span>
+            <p>No projects yet</p>
+            <p class="text-muted">Create your first project above</p>
+          </li>
+        <% end %>
+      </ul>
+    </nav>
+
+    <footer class="sidebar__footer">
+      <span class="text-muted text-xs">Lumen Space v1.0</span>
+    </footer>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-panel" id="main-content">
+    <div class="welcome-panel">
+      <div class="welcome-panel__icon">◎</div>
+      <h1 class="welcome-panel__title">Lumen Space</h1>
+      <p class="welcome-panel__subtitle">A local-first tool for deep research and structured thinking</p>
+      <div class="shortcut-hints">
+        <div class="shortcut-hint">
+          <span class="shortcut-hint__icon">+</span>
+          <span class="shortcut-hint__label">New Project</span>
+          <kbd class="shortcut-hint__key">⌘N</kbd>
+        </div>
+        <div class="shortcut-hint">
+          <span class="shortcut-hint__icon">🔍</span>
+          <span class="shortcut-hint__label">Search</span>
+          <kbd class="shortcut-hint__key">⌘F</kbd>
+        </div>
+        <div class="shortcut-hint">
+          <span class="shortcut-hint__icon">⬡</span>
+          <span class="shortcut-hint__label">Relationships</span>
+          <kbd class="shortcut-hint__key">⌘R</kbd>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,61 @@
+<div class="links-section" id="artifact_<%= artifact.id %>_links">
+  <% outgoing = artifact.outgoing_links.includes(:target_artifact) %>
+  <% incoming = artifact.incoming_links.includes(:source_artifact) %>
+
+  <% if outgoing.any? || incoming.any? %>
+    <div class="links-section__header">Connections</div>
+
+    <% if outgoing.any? %>
+      <div class="link-group">
+        <div class="link-group__title">→ Linked To</div>
+        <% outgoing.each do |link| %>
+          <div class="link-item">
+            <span class="link-item__type link-item__type--<%= link.link_type %>"><%= link.type_label %></span>
+            <%= link_to link.target_artifact.title, project_artifact_path(project, link.target_artifact), class: 'link-item__title' %>
+            <span class="link-item__icon"><%= link.target_artifact.type_icon %></span>
+            <%= button_to '×', artifact_link_path(link), method: :delete, class: 'link-item__remove btn btn--ghost btn--icon', data: { turbo_stream: true, turbo_confirm: 'Remove this link?' } %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if incoming.any? %>
+      <div class="link-group">
+        <div class="link-group__title">← Backlinks</div>
+        <% incoming.each do |link| %>
+          <div class="link-item">
+            <span class="link-item__type">From</span>
+            <%= link_to link.source_artifact.title, project_artifact_path(project, link.source_artifact), class: 'link-item__title' %>
+            <span class="link-item__icon"><%= link.source_artifact.type_icon %></span>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <!-- Add Link Form -->
+  <div class="add-link-form" data-controller="link-picker">
+    <button class="btn btn--ghost btn--sm" data-action="click->link-picker#toggle">+ Add Connection</button>
+    <div class="link-picker" data-link-picker-target="picker" style="display:none;">
+      <%= form_with url: artifact_links_path, data: { turbo_stream: true } do |f| %>
+        <%= f.hidden_field :artifact_link, value: '' %>
+        <input type="hidden" name="artifact_link[source_artifact_id]" value="<%= artifact.id %>">
+        <input type="hidden" name="artifact_link[project_id]" value="<%= project.id %>">
+        <div class="link-picker__row">
+          <select name="artifact_link[target_artifact_id]" class="input input--sm" data-link-picker-target="targetSelect">
+            <option value="">Select artifact...</option>
+            <% project.artifacts.where.not(id: artifact.id).order(:title).each do |a| %>
+              <option value="<%= a.id %>"><%= a.type_icon %> <%= a.title.truncate(50) %></option>
+            <% end %>
+          </select>
+          <select name="artifact_link[link_type]" class="input input--sm input--xs">
+            <% ArtifactLink::LINK_TYPES.each do |type| %>
+              <option value="<%= type %>"><%= type.humanize %></option>
+            <% end %>
+          </select>
+          <%= f.submit 'Link', class: 'btn btn--primary btn--sm' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

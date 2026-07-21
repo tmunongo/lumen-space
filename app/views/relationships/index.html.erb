@@ -1,0 +1,105 @@
+<% content_for :title, "Relationships - #{@project.name}" %>
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <%= link_to @project, class: 'sidebar__back' do %>← <%= @project.name %><% end %>
+    </div>
+    <div class="sidebar__section-title">Artifacts</div>
+    <ul class="artifact-list">
+      <% @artifacts.each do |artifact| %>
+        <li class="artifact-item <%= 'artifact-item--selected' if @selected_artifact&.id == artifact.id %>">
+          <%= link_to project_relationships_path(@project, artifact_id: artifact.id), class: 'artifact-item__link' do %>
+            <span class="artifact-item__icon"><%= artifact.type_icon %></span>
+            <div class="artifact-item__info">
+              <span class="artifact-item__title"><%= artifact.title.truncate(50) %></span>
+              <% tags = artifact.tag_names %>
+              <% if tags.any? %>
+                <span class="artifact-item__meta"><%= tags.first(3).join(', ') %></span>
+              <% end %>
+            </div>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </aside>
+
+  <!-- Main -->
+  <main class="main-panel">
+    <% if @selected_artifact %>
+      <div class="relationships-view">
+        <div class="relationships-view__header">
+          <h1 class="relationships-view__title">
+            <%= @selected_artifact.type_icon %> <%= @selected_artifact.title %>
+          </h1>
+          <div class="relationships-view__tags">
+            <% @selected_artifact.tag_names.each do |tag| %>
+              <span class="tag"><%= tag %></span>
+            <% end %>
+          </div>
+          <p class="text-muted"><%= @related.size %> related artifacts</p>
+        </div>
+
+        <% if @tag_suggestions.any? %>
+          <section class="relationships-section">
+            <h2 class="relationships-section__title">Suggested Tags</h2>
+            <div class="tag-suggestions">
+              <% @tag_suggestions.each do |tag| %>
+                <%= button_to "+#{tag}", add_tag_project_artifact_path(@project, @selected_artifact, tag_name: tag),
+                    method: :post, class: 'btn btn--ghost btn--xs tag-suggestion',
+                    data: { turbo_stream: true } %>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+
+        <% if @related.any? %>
+          <section class="relationships-section">
+            <h2 class="relationships-section__title">Related by Tags</h2>
+            <% @related.each do |rel| %>
+              <div class="relationship-item">
+                <div class="relationship-item__header">
+                  <%= link_to project_artifact_path(@project, rel[:artifact]), class: 'relationship-item__title' do %>
+                    <%= rel[:artifact].type_icon %> <%= rel[:artifact].title.truncate(60) %>
+                  <% end %>
+                  <span class="relationship-item__strength"><%= (rel[:strength] * 100).round %>%</span>
+                </div>
+                <div class="relationship-item__tags">
+                  <span class="text-muted text-xs">Shared: </span>
+                  <% rel[:shared_tags].each do |tag| %>
+                    <span class="tag tag--shared"><%= tag %></span>
+                  <% end %>
+                </div>
+                <div class="relationship-item__bar">
+                  <div class="relationship-item__bar-fill" style="width: <%= (rel[:strength] * 100).round %>%"></div>
+                </div>
+              </div>
+            <% end %>
+          </section>
+        <% end %>
+
+        <% if @network.any? %>
+          <section class="relationships-section">
+            <h2 class="relationships-section__title">Connected Network (<%= @network.size %> artifacts)</h2>
+            <% @network.each do |artifact| %>
+              <% is_bridge = @bridges.include?(artifact) %>
+              <div class="network-item <%= 'network-item--bridge' if is_bridge %> <%= 'network-item--anchor' if artifact.id == @selected_artifact.id %>">
+                <%= link_to project_relationships_path(@project, artifact_id: artifact.id), class: 'network-item__link' do %>
+                  <span class="network-item__icon"><%= artifact.type_icon %></span>
+                  <span class="network-item__title"><%= artifact.title.truncate(60) %></span>
+                  <% if is_bridge %><span class="network-item__badge">Bridge</span><% end %>
+                <% end %>
+              </div>
+            <% end %>
+          </section>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="welcome-panel">
+        <div class="welcome-panel__icon">⬡</div>
+        <h1 class="welcome-panel__title">Relationships</h1>
+        <p class="welcome-panel__subtitle">Select an artifact to explore its connections and tag relationships</p>
+      </div>
+    <% end %>
+  </main>
+</div>

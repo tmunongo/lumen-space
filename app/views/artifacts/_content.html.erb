@@ -1,0 +1,39 @@
+<% highlights = artifact.highlights.order(:created_at) %>
+<% case artifact.artifact_type %>
+<% when 'quote' %>
+  <blockquote class="quote-block">
+    <div class="quote-block__icon">❝</div>
+    <p class="quote-block__text"><%= artifact.content %></p>
+    <footer class="quote-block__attribution">— <%= artifact.attribution %></footer>
+  </blockquote>
+<% when 'note' %>
+  <div class="note-content">
+    <%= simple_format(artifact.content.to_s) %>
+  </div>
+<% when 'markdown' %>
+  <div class="markdown-content">
+    <%= markdown_to_html(artifact.content.to_s) %>
+  </div>
+<% when 'image' %>
+  <% if artifact.local_asset_path.present? && File.exist?(artifact.local_asset_path.to_s) %>
+    <div class="image-content">
+      <img src="<%= url_for(active_storage_disk_service_path(artifact.local_asset_path)) %>" alt="<%= artifact.title %>" class="image-content__img">
+    </div>
+  <% else %>
+    <p class="text-muted">Image file not found.</p>
+  <% end %>
+<% else %>
+  <% if artifact.content.present? %>
+    <div class="web-content" data-controller="web-content">
+      <%= inject_highlights(artifact.content, highlights) %>
+    </div>
+  <% elsif artifact.is_fetched %>
+    <p class="text-muted">No content available.</p>
+  <% else %>
+    <div class="fetch-prompt">
+      <p class="text-muted">Content not yet fetched.</p>
+      <%= button_to 'Fetch Content Now', fetch_content_project_artifact_path(project, artifact),
+          method: :post, class: 'btn btn--primary', data: { turbo_stream: true } %>
+    </div>
+  <% end %>
+<% end %>

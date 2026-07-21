@@ -1,0 +1,49 @@
+Dropped database 'storage/development.sqlite3'
+Dropped database 'storage/test.sqlite3'
+Created database 'storage/development.sqlite3'
+Created database 'storage/test.sqlite3'
+== 20240101000001 CreateProjects: migrating ===================================
+-- create_table(:projects)
+   -> 0.0008s
+-- add_index(:projects, :name, {unique: true})
+   -> 0.0003s
+-- add_index(:projects, :is_archived)
+   -> 0.0003s
+== 20240101000001 CreateProjects: migrated (0.0014s) ==========================
+
+== 20240101000002 CreateArtifacts: migrating ==================================
+-- create_table(:artifacts)
+   -> 0.0012s
+-- add_index(:artifacts, :artifact_type)
+   -> 0.0003s
+== 20240101000002 CreateArtifacts: migrated (0.0016s) =========================
+
+== 20240101000003 CreateArtifactTags: migrating ===============================
+-- create_table(:artifact_tags)
+   -> 0.0010s
+-- add_index(:artifact_tags, [:artifact_id, :name], {unique: true})
+   -> 0.0003s
+-- add_index(:artifact_tags, :name)
+   -> 0.0003s
+== 20240101000003 CreateArtifactTags: migrated (0.0015s) ======================
+
+== 20240101000004 CreateArtifactLinks: migrating ==============================
+-- create_table(:artifact_links)
+   -> 0.0009s
+-- add_index(:artifact_links, [:source_artifact_id, :target_artifact_id], {unique: true, name: "idx_artifact_links_unique"})
+   -> 0.0003s
+-- add_index(:artifact_links, :source_artifact_id)
+   -> 0.0003s
+-- add_index(:artifact_links, :target_artifact_id)
+   -> 0.0003s
+-- add_foreign_key(:artifact_links, :artifacts, {column: :source_artifact_id})
+   -> 0.0171s
+-- add_foreign_key(:artifact_links, :artifacts, {column: :target_artifact_id})
+   -> 0.0085s
+== 20240101000004 CreateArtifactLinks: migrated (0.0274s) =====================
+
+== 20240101000005 CreateArtifactHighlights: migrating =========================
+-- create_table(:artifact_highlights)
+   -> 0.0016s
+== 20240101000005 CreateArtifactHighlights: migrated (0.0016s) ================
+

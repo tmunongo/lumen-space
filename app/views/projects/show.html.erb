@@ -1,0 +1,56 @@
+<% content_for :title, @project.name %>
+<div class="app-shell" data-controller="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <div class="sidebar__brand">
+        <%= link_to root_path, class: 'sidebar__back' do %>
+          <span>← Back</span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="sidebar__project-header">
+      <h2 class="sidebar__project-name"><%= @project.name %></h2>
+      <div class="sidebar__project-actions">
+        <%= link_to project_relationships_path(@project), class: 'btn btn--ghost btn--xs', title: 'View relationships (⌘R)' do %>
+          ⬡ Relations
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Add artifact form -->
+    <div class="sidebar__add" id="artifact-form-container" data-controller="artifact-form">
+      <%= render 'artifacts/add_form', project: @project %>
+    </div>
+
+    <!-- Artifact list -->
+    <nav class="sidebar__nav">
+      <div class="artifact-list-header">
+        <span class="text-muted text-xs">ARTIFACTS (<%= @project.artifacts.count %>)</span>
+      </div>
+      <ul class="artifact-list" id="artifact-list">
+        <% if @artifacts.any? %>
+          <%= render partial: 'artifacts/artifact_item', collection: @artifacts, as: :artifact, locals: { project: @project } %>
+        <% else %>
+          <li class="empty-state empty-state--sm">
+            <p>No artifacts yet</p>
+            <p class="text-muted">Add a link, note, or quote above</p>
+          </li>
+        <% end %>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-panel">
+    <% if @selected_artifact %>
+      <%= render 'artifacts/reader', artifact: @selected_artifact, project: @project %>
+    <% else %>
+      <div class="empty-reader" id="artifact-reader">
+        <div class="empty-reader__icon">◎</div>
+        <p class="empty-reader__text">Select an artifact to view content</p>
+      </div>
+    <% end %>
+  </main>
+</div>

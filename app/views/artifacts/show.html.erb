@@ -1,0 +1,17 @@
+<% content_for :title, @artifact.title %>
+<div class="app-shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar__header">
+      <%= link_to @project, class: 'sidebar__back' do %>← <%= @project.name %><% end %>
+    </div>
+    <%= render 'artifacts/artifact_meta', artifact: @artifact, project: @project %>
+  </aside>
+
+  <!-- Reader -->
+  <main class="main-panel">
+    <div class="reader-panel" data-controller="reader">
+      <%= render 'artifacts/reader', artifact: @artifact, project: @project %>
+    </div>
+  </main>
+</div>

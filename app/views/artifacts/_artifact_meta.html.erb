@@ -1,0 +1,10 @@
+<div class="artifact-meta">
+  <div class="artifact-meta__type"><%= artifact.type_icon %> <%= artifact.type_label %></div>
+  <div class="artifact-meta__title"><%= artifact.title %></div>
+  <% if artifact.source_url.present? %>
+    <div class="artifact-meta__url">
+      <%= link_to artifact.source_url.truncate(40), artifact.source_url, target: '_blank' %>
+    </div>
+  <% end %>
+  <div class="artifact-meta__date"><%= format_date(artifact.created_at) %></div>
+</div>

@@ -1,0 +1,57 @@
+<div class="add-form" data-controller="add-form">
+  <div class="add-form__tabs">
+    <button class="add-form__tab active" data-action="click->add-form#showTab" data-tab="link">🔗 Link</button>
+    <button class="add-form__tab" data-action="click->add-form#showTab" data-tab="note">📝 Note</button>
+    <button class="add-form__tab" data-action="click->add-form#showTab" data-tab="quote">💬 Quote</button>
+    <button class="add-form__tab" data-action="click->add-form#showTab" data-tab="markdown">📄 Doc</button>
+  </div>
+
+  <!-- Link tab -->
+  <div class="add-form__panel active" data-add-form-target="panel" data-panel="link">
+    <%= form_with url: project_artifacts_path(project), data: { turbo_stream: true } do |f| %>
+      <input type="hidden" name="artifact[artifact_type]" value="raw_link">
+      <div class="input-group">
+        <%= text_field_tag 'artifact[source_url]', nil, placeholder: 'Paste URL...', class: 'input input--sm', id: 'url-input' %>
+        <input type="hidden" name="artifact[title]" id="url-title-hidden" value="">
+        <button type="submit" class="btn btn--primary btn--sm" data-action="click->add-form#setUrlTitle">Add</button>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Note tab -->
+  <div class="add-form__panel" data-add-form-target="panel" data-panel="note">
+    <%= form_with url: project_artifacts_path(project), data: { turbo_stream: true } do |f| %>
+      <input type="hidden" name="artifact[artifact_type]" value="note">
+      <div class="form-stack">
+        <input type="text" name="artifact[title]" placeholder="Note title..." class="input input--sm" required>
+        <textarea name="artifact[content]" placeholder="Write your note..." class="input input--sm textarea" rows="3"></textarea>
+        <button type="submit" class="btn btn--primary btn--sm">Save Note</button>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Quote tab -->
+  <div class="add-form__panel" data-add-form-target="panel" data-panel="quote">
+    <%= form_with url: project_artifacts_path(project), data: { turbo_stream: true } do |f| %>
+      <input type="hidden" name="artifact[artifact_type]" value="quote">
+      <div class="form-stack">
+        <input type="text" name="artifact[title]" placeholder="Quote title..." class="input input--sm" required>
+        <textarea name="artifact[content]" placeholder="Quote text..." class="input input--sm textarea" rows="3" required></textarea>
+        <input type="text" name="artifact[attribution]" placeholder="— Author / Source" class="input input--sm" required>
+        <input type="url" name="artifact[source_url]" placeholder="Source URL (optional)" class="input input--sm">
+        <button type="submit" class="btn btn--primary btn--sm">Save Quote</button>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Markdown doc tab -->
+  <div class="add-form__panel" data-add-form-target="panel" data-panel="markdown">
+    <%= form_with url: project_artifacts_path(project), data: { turbo_stream: true } do |f| %>
+      <input type="hidden" name="artifact[artifact_type]" value="markdown">
+      <div class="form-stack">
+        <input type="text" name="artifact[title]" placeholder="Document title..." class="input input--sm" required>
+        <button type="submit" class="btn btn--primary btn--sm">Create Document</button>
+      </div>
+    <% end %>
+  </div>
+</div>

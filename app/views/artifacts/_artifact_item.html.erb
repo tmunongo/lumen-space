@@ -1,0 +1,20 @@
+<li class="artifact-item" id="artifact_<%= artifact.id %>">
+  <%= link_to project_artifact_path(project, artifact), class: 'artifact-item__link', data: { turbo_frame: 'artifact-reader' } do %>
+    <span class="artifact-item__icon"><%= artifact.type_icon %></span>
+    <div class="artifact-item__info">
+      <span class="artifact-item__title"><%= artifact.title.truncate(60) %></span>
+      <span class="artifact-item__meta">
+        <%= format_date(artifact.created_at) %>
+        <% if artifact.tag_names.any? %>
+          · <%= artifact.tag_names.first(2).join(', ') %>
+        <% end %>
+      </span>
+    </div>
+    <% if artifact.artifact_type == 'raw_link' && !artifact.is_fetched %>
+      <span class="artifact-item__badge artifact-item__badge--pending" id="artifact_<%= artifact.id %>_status">Pending</span>
+    <% end %>
+  <% end %>
+  <%= button_to '×', project_artifact_path(project, artifact), method: :delete,
+      class: 'artifact-item__delete btn btn--ghost btn--icon',
+      data: { turbo_stream: true, turbo_confirm: "Delete \"#{artifact.title}\"?" } %>
+</li>

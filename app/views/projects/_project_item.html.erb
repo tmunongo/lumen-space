@@ -1,0 +1,22 @@
+<li class="project-item <%= project.is_archived? ? 'project-item--archived' : '' %>" id="project_<%= project.id %>">
+  <%= link_to project_path(project), class: 'project-item__link', data: { turbo_frame: '_top' } do %>
+    <span class="project-item__icon"><%= project.is_archived? ? '🗄️' : '📁' %></span>
+    <div class="project-item__info">
+      <span class="project-item__name"><%= project.name %></span>
+      <span class="project-item__meta">Modified <%= format_date(project.updated_at) %> &bull; <%= project.artifact_count %> items</span>
+    </div>
+  <% end %>
+  <div class="project-item__actions" data-controller="dropdown">
+    <button class="btn btn--ghost btn--icon" data-action="click->dropdown#toggle">⋮</button>
+    <div class="dropdown-menu" data-dropdown-target="menu">
+      <% if project.is_archived? %>
+        <%= button_to 'Unarchive', unarchive_project_path(project), method: :patch, class: 'dropdown-item', data: { turbo_stream: true } %>
+      <% else %>
+        <%= button_to 'Archive', archive_project_path(project), method: :patch, class: 'dropdown-item', data: { turbo_stream: true } %>
+      <% end %>
+      <%= button_to 'Delete', project_path(project), method: :delete,
+          class: 'dropdown-item dropdown-item--danger',
+          data: { turbo_method: :delete, turbo_confirm: "Delete \"#{project.name}\" and all its artifacts? This cannot be undone." } %>
+    </div>
+  </div>
+</li>

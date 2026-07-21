@@ -1,0 +1,9 @@
+<%= form_with model: project, url: projects_path, data: { turbo: true }, html: { id: 'new-project-form', class: 'new-project-form' } do |f| %>
+  <div class="input-group">
+    <%= f.text_field :name, placeholder: 'New project name...', class: 'input input--sm', id: 'new-project-input' %>
+    <%= f.submit '+', class: 'btn btn--icon btn--primary', title: 'Create project' %>
+  </div>
+  <% if project.errors.any? %>
+    <p class="form-error"><%= project.errors.full_messages.first %></p>
+  <% end %>
+<% end %>
