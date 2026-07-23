@@ -1,4 +1,5 @@
 <% content_for :title, @project.name %>
+<%= turbo_stream_from @project %>
 <div class="app-shell" data-controller="app">
   <!-- Sidebar -->
   <aside class="sidebar">

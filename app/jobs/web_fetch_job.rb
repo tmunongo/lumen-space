@@ -41,6 +41,8 @@ class WebFetchJob < ApplicationJob
         is_fetched: true,
         artifact_type: "web_page"
       )
+
+      broadcast_updates(artifact)
     rescue => e
       Rails.logger.error "WebFetchJob failed for artifact #{artifact_id}: #{e.message}"
       mark_failed(artifact, e.message)
@@ -119,7 +121,34 @@ class WebFetchJob < ApplicationJob
     url.to_s.strip.downcase.start_with?("javascript:", "vbscript:", "data:text")
   end
 
+  def broadcast_updates(artifact)
+    project = artifact.project
+    return unless project
+
+    Turbo::StreamsChannel.broadcast_replace_to(
+      project,
+      target: "artifact_#{artifact.id}",
+      partial: "artifacts/artifact_item",
+      locals: { artifact: artifact, project: project }
+    )
+
+    Turbo::StreamsChannel.broadcast_replace_to(
+      project,
+      target: "artifact_#{artifact.id}_reader_wrapper",
+      partial: "artifacts/reader_wrapper",
+      locals: { artifact: artifact, project: project }
+    )
+  end
+
   def mark_failed(artifact, reason)
-    Rails.logger.warn "WebFetchJob: failed for #{artifact.id}: #{reason}"
+    Rails.logger.warn "WebFetchJob: failed for #{artifact&.id}: #{reason}"
+    return unless artifact && artifact.project
+
+    Turbo::StreamsChannel.broadcast_replace_to(
+      artifact.project,
+      target: "artifact_#{artifact.id}_status",
+      partial: "artifacts/fetch_status",
+      locals: { artifact: artifact, fetching: false }
+    )
   end
 end

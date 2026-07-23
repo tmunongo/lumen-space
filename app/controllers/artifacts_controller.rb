@@ -30,7 +30,7 @@ class ArtifactsController < ApplicationController
         format.turbo_stream {
           render turbo_stream: [
             turbo_stream.prepend("artifact-list", partial: "artifacts/artifact_item", locals: { artifact: @artifact, project: @project }),
-            turbo_stream.replace("artifact-form-container", partial: "artifacts/empty_form")
+            turbo_stream.update("artifact-form-container", partial: "artifacts/add_form", locals: { project: @project })
           ]
         }
         format.html { redirect_to project_artifact_path(@project, @artifact) }

@@ -3,56 +3,7 @@
   <div class="reader__progress" data-reader-target="progress"></div>
 
   <div class="reader__scroll" data-reader-target="scroll" data-action="scroll->reader#onScroll">
-    <div class="reader__content-wrapper">
-      <!-- Header -->
-      <header class="reader__header">
-        <%= link_to project_path(artifact.project), class: 'reader__back' do %>
-          ← Back
-        <% end %>
-        <div class="reader__header-actions">
-          <%= link_to project_relationships_path(artifact.project, artifact_id: artifact.id), class: 'btn btn--ghost btn--sm' do %>
-            ⬡ Connections
-          <% end %>
-          <% if artifact.web_type? && !artifact.is_fetched %>
-            <%= button_to 'Fetch Content', fetch_content_project_artifact_path(artifact.project, artifact),
-                method: :post, class: 'btn btn--primary btn--sm', data: { turbo_stream: true } %>
-          <% end %>
-        </div>
-      </header>
-
-      <!-- Article -->
-      <article class="reader__article">
-        <h1 class="reader__title"><%= artifact.title %></h1>
-
-        <div class="reader__meta">
-          <% if artifact.source_url.present? %>
-            <span class="reader__source">
-              <%= link_to URI.parse(artifact.source_url).host, artifact.source_url, target: '_blank', class: 'reader__source-link' rescue artifact.source_url %>
-            </span>
-          <% end %>
-          <span class="reader__date"><%= format_date(artifact.created_at) %></span>
-          <% if artifact.artifact_type == 'web_page' %>
-            <span class="reader__reading-time"><%= artifact.reading_time_minutes %> min read</span>
-          <% end %>
-        </div>
-
-        <div class="reader__tags" id="artifact_<%= artifact.id %>_tags">
-          <%= render 'artifacts/tags', artifact: artifact, project: project %>
-        </div>
-
-        <hr class="reader__divider">
-
-        <!-- Content -->
-        <div class="reader__body" id="artifact_<%= artifact.id %>_content">
-          <%= render 'artifacts/content', artifact: artifact, project: project %>
-        </div>
-
-        <!-- Links Section -->
-        <div id="artifact_<%= artifact.id %>_links">
-          <%= render 'artifacts/links', artifact: artifact, project: project %>
-        </div>
-      </article>
-    </div>
+    <%= render 'artifacts/reader_wrapper', artifact: artifact, project: project %>
   </div>
 
   <!-- Highlight toolbar -->
