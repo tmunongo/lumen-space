@@ -22,7 +22,7 @@ module ApplicationHelper
   end
 
   def inject_highlights(html_content, highlights)
-    return html_content if highlights.empty?
+    return html_content.to_s.html_safe if highlights.empty?
     processed = html_content.dup
     processed_texts = Set.new
 
@@ -33,7 +33,8 @@ module ApplicationHelper
       escaped_text = ERB::Util.html_escape(text)
       replacement = %(<span class="highlight highlight--#{highlight.style}" data-highlight-id="#{highlight.id}">#{escaped_text}</span>)
       # Replace only in text nodes (not inside tags)
-      processed = replace_in_text_nodes(processed, escaped_text, replacement)
+      search_term = processed.include?(text) ? text : escaped_text
+      processed = replace_in_text_nodes(processed, search_term, replacement)
       processed_texts.add(text)
     end
     processed.html_safe
@@ -56,7 +57,7 @@ module ApplicationHelper
     parts = html.split(/(<[^>]+>)/)
     parts.map.with_index do |part, i|
       if i.even? # text node
-        part.sub(search, replacement)
+        part.sub(search) { replacement }
       else # tag
         part
       end
