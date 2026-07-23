@@ -13,6 +13,10 @@ gem "stimulus-rails"
 gem "jbuilder"
 gem "bootsnap", require: false
 
+# Production web server proxy
+gem "thruster"
+
+
 # Web scraping
 gem "nokogiri"
 gem "httparty"

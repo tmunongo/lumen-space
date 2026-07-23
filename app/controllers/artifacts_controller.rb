@@ -56,10 +56,6 @@ class ArtifactsController < ApplicationController
   end
 
   def destroy
-    # Clean up image file if present
-    if @artifact.local_asset_path.present? && File.exist?(@artifact.local_asset_path.to_s)
-      File.delete(@artifact.local_asset_path)
-    end
     @artifact.destroy
     respond_to do |format|
       format.turbo_stream {

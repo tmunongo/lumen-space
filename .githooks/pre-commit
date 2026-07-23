@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+echo "🔍 Running pre-commit CI checks..."
+
+# Run full local CI suite
+bin/ci

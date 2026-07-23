@@ -61,7 +61,17 @@ class Artifact < ApplicationRecord
     }[artifact_type] || "📁"
   end
 
+  after_destroy :delete_local_asset
+
   def type_label
     artifact_type.humanize
+  end
+
+  private
+
+  def delete_local_asset
+    return unless local_asset_path.present?
+    path = Rails.root.join(local_asset_path).cleanpath
+    File.delete(path) if File.exist?(path)
   end
 end
