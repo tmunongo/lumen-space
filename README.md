@@ -1,3 +1,5 @@
+[![CI](https://github.com/tmunongo/lumen-space/actions/workflows/ci.yml/badge.svg)](https://github.com/tmunongo/lumen-space/actions/workflows/ci.yml)
+
 # ◉ Lumen Space
 
 > A local-first tool for deep research and structured thinking — now as a Ruby on Rails web application.
