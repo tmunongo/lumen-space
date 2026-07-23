@@ -1,14 +1,17 @@
 <% content_for :title, @project.name %>
 <%= turbo_stream_from @project %>
 <div class="app-shell" data-controller="app">
+  <div class="sidebar-backdrop" data-app-target="backdrop" data-action="click->app#closeSidebar"></div>
+
   <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar" data-app-target="sidebar">
     <div class="sidebar__header">
       <div class="sidebar__brand">
         <%= link_to root_path, class: 'sidebar__back' do %>
           <span>← Back</span>
         <% end %>
       </div>
+      <button type="button" class="sidebar__close-btn" data-action="click->app#closeSidebar" aria-label="Close sidebar">✕</button>
     </div>
 
     <div class="sidebar__project-header">
@@ -29,7 +32,7 @@
     </div>
 
     <!-- Artifact list -->
-    <nav class="sidebar__nav">
+    <nav class="sidebar__nav" data-action="click->app#closeSidebarOnMobile">
       <div class="artifact-list-header">
         <span class="text-muted text-xs">ARTIFACTS (<%= @project.artifacts.count %>)</span>
       </div>
@@ -49,6 +52,14 @@
 
   <!-- Main content -->
   <main class="main-panel">
+    <header class="mobile-header">
+      <button type="button" class="mobile-header__toggle" data-action="click->app#toggleSidebar" aria-label="Toggle navigation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <div class="mobile-header__brand">
+        <span class="mobile-header__title"><%= @project.name %></span>
+      </div>
+    </header>
     <% if @selected_artifact %>
       <%= render 'artifacts/reader', artifact: @selected_artifact, project: @project %>
     <% else %>
@@ -61,3 +72,4 @@
 </div>
 
 <div id="export-modal-holder"></div>
+

@@ -1,12 +1,15 @@
 <% content_for :title, 'Projects' %>
 <div class="app-shell" data-controller="app">
+  <div class="sidebar-backdrop" data-app-target="backdrop" data-action="click->app#closeSidebar"></div>
+
   <!-- Sidebar -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar" id="sidebar" data-app-target="sidebar">
     <div class="sidebar__header">
       <div class="sidebar__brand">
         <span class="sidebar__logo">◉</span>
         <span class="sidebar__brand-name">Lumen Space</span>
       </div>
+      <button type="button" class="sidebar__close-btn" data-action="click->app#closeSidebar" aria-label="Close sidebar">✕</button>
     </div>
 
     <div class="sidebar__actions">
@@ -49,6 +52,15 @@
 
   <!-- Main content -->
   <main class="main-panel" id="main-content">
+    <header class="mobile-header">
+      <button type="button" class="mobile-header__toggle" data-action="click->app#toggleSidebar" aria-label="Toggle navigation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <div class="mobile-header__brand">
+        <span class="mobile-header__logo">◉</span>
+        <span class="mobile-header__title">Lumen Space</span>
+      </div>
+    </header>
     <div class="welcome-panel">
       <div class="welcome-panel__icon">◎</div>
       <h1 class="welcome-panel__title">Lumen Space</h1>
@@ -73,3 +85,4 @@
     </div>
   </main>
 </div>
+

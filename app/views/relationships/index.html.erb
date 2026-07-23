@@ -1,12 +1,15 @@
 <% content_for :title, "Relationships - #{@project.name}" %>
-<div class="app-shell">
+<div class="app-shell" data-controller="app">
+  <div class="sidebar-backdrop" data-app-target="backdrop" data-action="click->app#closeSidebar"></div>
+
   <!-- Sidebar -->
-  <aside class="sidebar">
+  <aside class="sidebar" data-app-target="sidebar">
     <div class="sidebar__header">
       <%= link_to @project, class: 'sidebar__back' do %>← <%= @project.name %><% end %>
+      <button type="button" class="sidebar__close-btn" data-action="click->app#closeSidebar" aria-label="Close sidebar">✕</button>
     </div>
     <div class="sidebar__section-title">Artifacts</div>
-    <ul class="artifact-list">
+    <ul class="artifact-list" data-action="click->app#closeSidebarOnMobile">
       <% @artifacts.each do |artifact| %>
         <li class="artifact-item <%= 'artifact-item--selected' if @selected_artifact&.id == artifact.id %>">
           <%= link_to project_relationships_path(@project, artifact_id: artifact.id), class: 'artifact-item__link' do %>
@@ -27,6 +30,14 @@
 
   <!-- Main -->
   <main class="main-panel">
+    <header class="mobile-header">
+      <button type="button" class="mobile-header__toggle" data-action="click->app#toggleSidebar" aria-label="Toggle navigation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
+      <div class="mobile-header__brand">
+        <span class="mobile-header__title">Relationships - <%= @project.name %></span>
+      </div>
+    </header>
     <% if @selected_artifact %>
       <div class="relationships-view">
         <div class="relationships-view__header">
