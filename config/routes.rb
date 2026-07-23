@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     member do
       patch :archive
       patch :unarchive
+      get :export
     end
     resources :artifacts do
       member do

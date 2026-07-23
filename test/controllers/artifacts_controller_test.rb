@@ -19,7 +19,7 @@ class ArtifactsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match 'target="artifact-form-container"', response.body
     assert_match 'action="update"', response.body
-    assert_match 'add-form', response.body
-    assert_match 'artifact[source_url]', response.body
+    assert_match "add-form", response.body
+    assert_match "artifact[source_url]", response.body
   end
 end

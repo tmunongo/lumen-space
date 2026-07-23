@@ -1,0 +1,70 @@
+<div class="modal modal--open" data-controller="export-modal" data-export-modal-target="modal" id="export-modal">
+  <div class="modal__overlay" data-action="click->export-modal#close"></div>
+  <div class="modal__dialog modal__dialog--lg">
+    <div class="modal__header">
+      <div>
+        <h3 class="modal__title">Export Links & Bibliography</h3>
+        <p class="modal__subtitle">
+          Extract saved links for <strong><%= project.name %></strong>
+        </p>
+      </div>
+      <button class="modal__close" data-action="click->export-modal#close" title="Close (Esc)">×</button>
+    </div>
+
+    <div class="modal__body">
+      <div class="export-tabs">
+        <% [
+          ['markdown', 'Markdown'],
+          ['raw_urls', 'Plain URLs'],
+          ['bibtex', 'BibTeX'],
+          ['apa', 'APA Style'],
+          ['csv', 'CSV'],
+          ['json', 'JSON']
+        ].each do |key, label| %>
+          <%= link_to label,
+                      export_project_path(project, export_format: key),
+                      class: "export-tab #{'export-tab--active' if (export_format || 'markdown') == key}",
+                      data: { turbo_stream: true } %>
+        <% end %>
+      </div>
+
+      <div class="export-preview">
+        <div class="export-preview__header">
+          <span class="text-muted text-xs">PREVIEW</span>
+          <span class="text-muted text-xs"><%= project.artifacts.where.not(source_url: [nil, ""]).count %> link(s) found</span>
+        </div>
+        <textarea class="export-preview__textarea"
+                  data-export-modal-target="output"
+                  readonly
+                  rows="12"
+                  spellcheck="false"><%= content %></textarea>
+      </div>
+    </div>
+
+    <div class="modal__footer">
+      <div class="modal__footer-left">
+        <% ext = case export_format
+                 when 'raw_urls', 'apa' then 'txt'
+                 when 'bibtex' then 'bib'
+                 when 'markdown' then 'md'
+                 when 'csv' then 'csv'
+                 when 'json' then 'json'
+                 else 'txt'
+                 end %>
+        <%= link_to export_project_path(project, format: ext, export_format: export_format),
+                    class: "btn btn--secondary btn--sm",
+                    download: "#{project.name.parameterize}-links.#{ext}" do %>
+          ⬇ Download .<%= ext %>
+        <% end %>
+      </div>
+      <div class="modal__footer-right">
+        <button class="btn btn--primary btn--sm" data-action="click->export-modal#copy" data-export-modal-target="copyButton">
+          📋 Copy to Clipboard
+        </button>
+        <button class="btn btn--ghost btn--sm" data-action="click->export-modal#close">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

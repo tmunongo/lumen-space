@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [ :show, :edit, :update, :destroy, :archive, :unarchive ]
+  before_action :set_project, only: [ :show, :edit, :update, :destroy, :archive, :unarchive, :export ]
 
   def index
     @projects = Project.all
@@ -76,6 +76,42 @@ class ProjectsController < ApplicationController
         render turbo_stream: turbo_stream.replace("project_#{@project.id}", partial: "projects/project_item", locals: { project: @project })
       }
       format.html { redirect_to projects_path }
+    end
+  end
+
+  def export
+    @export_format = params[:export_format].presence || "markdown"
+    @exporter = BibliographyExporter.new(@project)
+    @content = @exporter.export(@export_format)
+
+    respond_to do |format|
+      format.html do
+        render partial: "projects/export_modal", locals: { project: @project, export_format: @export_format, content: @content, exporter: @exporter }
+      end
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update("export-modal-holder", partial: "projects/export_modal", locals: { project: @project, export_format: @export_format, content: @content, exporter: @exporter })
+      end
+      format.text do
+        ext = case @export_format
+        when "raw_urls" then "txt"
+        when "bibtex" then "bib"
+        when "markdown" then "md"
+        when "apa" then "txt"
+        else "txt"
+        end
+        mime = case @export_format
+        when "json" then "application/json"
+        when "csv" then "text/csv"
+        else "text/plain"
+        end
+        send_data @content, filename: "#{@project.name.parameterize}-links.#{ext}", type: mime
+      end
+      format.csv do
+        send_data @exporter.export("csv"), filename: "#{@project.name.parameterize}-links.csv", type: "text/csv"
+      end
+      format.json do
+        send_data @exporter.export("json"), filename: "#{@project.name.parameterize}-links.json", type: "application/json"
+      end
     end
   end
 

@@ -14,6 +14,9 @@
     <div class="sidebar__project-header">
       <h2 class="sidebar__project-name"><%= @project.name %></h2>
       <div class="sidebar__project-actions">
+        <%= link_to export_project_path(@project), class: 'btn btn--ghost btn--xs', title: 'Export links & bibliography', data: { turbo_stream: true } do %>
+          📥 Export
+        <% end %>
         <%= link_to project_relationships_path(@project), class: 'btn btn--ghost btn--xs', title: 'View relationships (⌘R)' do %>
           ⬡ Relations
         <% end %>
@@ -56,3 +59,5 @@
     <% end %>
   </main>
 </div>
+
+<div id="export-modal-holder"></div>
