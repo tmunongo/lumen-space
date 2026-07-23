@@ -4,13 +4,13 @@ class Artifact < ApplicationRecord
 
   belongs_to :project
   has_many :artifact_tags, dependent: :destroy
-  has_many :highlights, class_name: 'ArtifactHighlight', dependent: :destroy
-  has_many :outgoing_links, class_name: 'ArtifactLink', foreign_key: :source_artifact_id, dependent: :destroy
-  has_many :incoming_links, class_name: 'ArtifactLink', foreign_key: :target_artifact_id, dependent: :destroy
+  has_many :highlights, class_name: "ArtifactHighlight", dependent: :destroy
+  has_many :outgoing_links, class_name: "ArtifactLink", foreign_key: :source_artifact_id, dependent: :destroy
+  has_many :incoming_links, class_name: "ArtifactLink", foreign_key: :target_artifact_id, dependent: :destroy
 
   validates :title, presence: true
   validates :artifact_type, inclusion: { in: TYPES }
-  validates :attribution, presence: true, if: -> { artifact_type == 'quote' }
+  validates :attribution, presence: true, if: -> { artifact_type == "quote" }
   validates :source_url, presence: true, if: -> { %w[web_page raw_link].include?(artifact_type) }
 
   scope :by_project, ->(project_id) { where(project_id: project_id) }
@@ -47,18 +47,18 @@ class Artifact < ApplicationRecord
     return 0 unless content.present?
     text = ActionController::Base.helpers.strip_tags(content)
     words = text.split.size
-    [(words / 200.0).ceil, 1].max
+    [ (words / 200.0).ceil, 1 ].max
   end
 
   def type_icon
     {
-      'web_page'  => '🌐',
-      'raw_link'  => '🔗',
-      'note'      => '📝',
-      'quote'     => '💬',
-      'image'     => '🖼️',
-      'markdown'  => '📄'
-    }[artifact_type] || '📁'
+      "web_page"  => "🌐",
+      "raw_link"  => "🔗",
+      "note"      => "📝",
+      "quote"     => "💬",
+      "image"     => "🖼️",
+      "markdown"  => "📄"
+    }[artifact_type] || "📁"
   end
 
   def type_label

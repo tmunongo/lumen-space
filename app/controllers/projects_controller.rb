@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: [:show, :edit, :update, :destroy, :archive, :unarchive]
+  before_action :set_project, only: [ :show, :edit, :update, :destroy, :archive, :unarchive ]
 
   def index
     @projects = Project.all
@@ -22,16 +22,16 @@ class ProjectsController < ApplicationController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.prepend('project-list', partial: 'projects/project_item', locals: { project: @project }),
-            turbo_stream.replace('new-project-form', partial: 'projects/new_form', locals: { project: Project.new })
+            turbo_stream.prepend("project-list", partial: "projects/project_item", locals: { project: @project }),
+            turbo_stream.replace("new-project-form", partial: "projects/new_form", locals: { project: Project.new })
           ]
         end
-        format.html { redirect_to @project, notice: 'Project created.' }
+        format.html { redirect_to @project, notice: "Project created." }
       end
     else
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace('new-project-form', partial: 'projects/new_form', locals: { project: @project })
+          render turbo_stream: turbo_stream.replace("new-project-form", partial: "projects/new_form", locals: { project: @project })
         end
         format.html { render :index }
       end
@@ -42,7 +42,7 @@ class ProjectsController < ApplicationController
     if @project.update(project_params)
       respond_to do |format|
         format.turbo_stream {
-          render turbo_stream: turbo_stream.replace("project_#{@project.id}", partial: 'projects/project_item', locals: { project: @project })
+          render turbo_stream: turbo_stream.replace("project_#{@project.id}", partial: "projects/project_item", locals: { project: @project })
         }
         format.html { redirect_to @project }
       end
@@ -55,7 +55,7 @@ class ProjectsController < ApplicationController
     @project.destroy
     respond_to do |format|
       format.turbo_stream { render turbo_stream: turbo_stream.remove("project_#{@project.id}") }
-      format.html { redirect_to projects_path, notice: 'Project deleted.' }
+      format.html { redirect_to projects_path, notice: "Project deleted." }
     end
   end
 
@@ -63,7 +63,7 @@ class ProjectsController < ApplicationController
     @project.archive!
     respond_to do |format|
       format.turbo_stream {
-        render turbo_stream: turbo_stream.replace("project_#{@project.id}", partial: 'projects/project_item', locals: { project: @project })
+        render turbo_stream: turbo_stream.replace("project_#{@project.id}", partial: "projects/project_item", locals: { project: @project })
       }
       format.html { redirect_to projects_path }
     end
@@ -73,7 +73,7 @@ class ProjectsController < ApplicationController
     @project.unarchive!
     respond_to do |format|
       format.turbo_stream {
-        render turbo_stream: turbo_stream.replace("project_#{@project.id}", partial: 'projects/project_item', locals: { project: @project })
+        render turbo_stream: turbo_stream.replace("project_#{@project.id}", partial: "projects/project_item", locals: { project: @project })
       }
       format.html { redirect_to projects_path }
     end
@@ -91,9 +91,9 @@ class ProjectsController < ApplicationController
 
   def sort_projects(projects)
     session[:sort_by] = params[:sort_by] if params[:sort_by]
-    case (params[:sort_by] || session[:sort_by] || 'modified')
-    when 'name'     then projects.by_name
-    when 'created'  then projects.by_created
+    case (params[:sort_by] || session[:sort_by] || "modified")
+    when "name"     then projects.by_name
+    when "created"  then projects.by_created
     else                 projects.by_modified
     end
   end

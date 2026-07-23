@@ -3,7 +3,7 @@ class WebFetchJob < ApplicationJob
 
   REMOVE_TAGS = %w[script style noscript iframe object embed nav header footer aside form].freeze
   PRESERVE_TAGS = %w[p h1 h2 h3 h4 h5 h6 strong em b i u a ul ol li blockquote pre code img figure figcaption br hr].freeze
-  ALLOWED_ATTRS = { 'a' => %w[href title], 'img' => %w[src alt title] }.freeze
+  ALLOWED_ATTRS = { "a" => %w[href title], "img" => %w[src alt title] }.freeze
 
   def perform(artifact_id)
     artifact = Artifact.find_by(id: artifact_id)
@@ -11,7 +11,7 @@ class WebFetchJob < ApplicationJob
 
     begin
       response = HTTParty.get(artifact.source_url,
-        headers: { 'User-Agent' => 'Mozilla/5.0 (compatible; LumenSpace/1.0)' },
+        headers: { "User-Agent" => "Mozilla/5.0 (compatible; LumenSpace/1.0)" },
         follow_redirects: true,
         timeout: 15)
 
@@ -39,7 +39,7 @@ class WebFetchJob < ApplicationJob
         title: title,
         content: cleaned_html,
         is_fetched: true,
-        artifact_type: 'web_page'
+        artifact_type: "web_page"
       )
     rescue => e
       Rails.logger.error "WebFetchJob failed for artifact #{artifact_id}: #{e.message}"
@@ -50,22 +50,22 @@ class WebFetchJob < ApplicationJob
   private
 
   def extract_title(doc)
-    [ doc.at_css('article h1'), doc.at_css('h1'), doc.at_css('title') ]
+    [ doc.at_css("article h1"), doc.at_css("h1"), doc.at_css("title") ]
       .compact.map { |el| el.text.strip }.reject(&:blank?).first
   end
 
   def extract_main_content(doc)
-    doc.at_css('article') ||
-    doc.at_css('main') ||
+    doc.at_css("article") ||
+    doc.at_css("main") ||
     score_best_div(doc) ||
-    doc.at_css('body') ||
+    doc.at_css("body") ||
     doc
   end
 
   def score_best_div(doc)
     best, best_score = nil, 0
-    doc.css('div').each do |div|
-      score = div.css('p').count * 3 + div.text.length / 100.0
+    doc.css("div").each do |div|
+      score = div.css("p").count * 3 + div.text.length / 100.0
       id_class = "#{div['class']} #{div['id']}".downcase
       score -= 50 if id_class.match?(/comment|footer|nav|sidebar/)
       score += 25 if id_class.match?(/article/)
@@ -79,7 +79,7 @@ class WebFetchJob < ApplicationJob
   end
 
   def sanitize_node(node)
-    return '' unless node
+    return "" unless node
     buffer = +""
     traverse(node, buffer)
     buffer.strip
@@ -116,7 +116,7 @@ class WebFetchJob < ApplicationJob
   end
 
   def dangerous_url?(url)
-    url.to_s.strip.downcase.start_with?('javascript:', 'vbscript:', 'data:text')
+    url.to_s.strip.downcase.start_with?("javascript:", "vbscript:", "data:text")
   end
 
   def mark_failed(artifact, reason)

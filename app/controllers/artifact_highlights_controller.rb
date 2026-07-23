@@ -7,7 +7,7 @@ class ArtifactHighlightsController < ApplicationController
     if @highlight.save
       respond_to do |format|
         format.turbo_stream {
-          render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_content", partial: 'artifacts/content', locals: { artifact: @artifact, project: @project })
+          render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_content", partial: "artifacts/content", locals: { artifact: @artifact, project: @project })
         }
         format.json { render json: { id: @highlight.id }, status: :created }
       end
@@ -21,7 +21,7 @@ class ArtifactHighlightsController < ApplicationController
     @highlight.destroy
     respond_to do |format|
       format.turbo_stream {
-        render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_content", partial: 'artifacts/content', locals: { artifact: @artifact, project: @project })
+        render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_content", partial: "artifacts/content", locals: { artifact: @artifact, project: @project })
       }
       format.html { redirect_to project_artifact_path(@project, @artifact) }
     end

@@ -1,6 +1,6 @@
 class ArtifactsController < ApplicationController
   before_action :set_project
-  before_action :set_artifact, only: [:show, :edit, :update, :destroy, :fetch_content, :add_tag, :remove_tag]
+  before_action :set_artifact, only: [ :show, :edit, :update, :destroy, :fetch_content, :add_tag, :remove_tag ]
 
   def show
     @highlights = @artifact.highlights.order(:created_at)
@@ -14,7 +14,7 @@ class ArtifactsController < ApplicationController
 
   def new
     @artifact = @project.artifacts.new
-    @artifact_type = params[:type] || 'note'
+    @artifact_type = params[:type] || "note"
   end
 
   def create
@@ -22,15 +22,15 @@ class ArtifactsController < ApplicationController
 
     if @artifact.save
       # Enqueue fetch job for links
-      if @artifact.artifact_type == 'raw_link' && @artifact.source_url.present?
+      if @artifact.artifact_type == "raw_link" && @artifact.source_url.present?
         WebFetchJob.perform_later(@artifact.id)
       end
 
       respond_to do |format|
         format.turbo_stream {
           render turbo_stream: [
-            turbo_stream.prepend('artifact-list', partial: 'artifacts/artifact_item', locals: { artifact: @artifact, project: @project }),
-            turbo_stream.replace('artifact-form-container', partial: 'artifacts/empty_form')
+            turbo_stream.prepend("artifact-list", partial: "artifacts/artifact_item", locals: { artifact: @artifact, project: @project }),
+            turbo_stream.replace("artifact-form-container", partial: "artifacts/empty_form")
           ]
         }
         format.html { redirect_to project_artifact_path(@project, @artifact) }
@@ -46,7 +46,7 @@ class ArtifactsController < ApplicationController
     if @artifact.update(artifact_params)
       respond_to do |format|
         format.turbo_stream {
-          render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}", partial: 'artifacts/artifact_item', locals: { artifact: @artifact, project: @project })
+          render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}", partial: "artifacts/artifact_item", locals: { artifact: @artifact, project: @project })
         }
         format.html { redirect_to project_artifact_path(@project, @artifact) }
       end
@@ -65,7 +65,7 @@ class ArtifactsController < ApplicationController
       format.turbo_stream {
         render turbo_stream: [
           turbo_stream.remove("artifact_#{@artifact.id}"),
-          turbo_stream.replace('artifact-reader', partial: 'artifacts/empty_reader')
+          turbo_stream.replace("artifact-reader", partial: "artifacts/empty_reader")
         ]
       }
       format.html { redirect_to @project }
@@ -76,9 +76,9 @@ class ArtifactsController < ApplicationController
     WebFetchJob.perform_later(@artifact.id)
     respond_to do |format|
       format.turbo_stream {
-        render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_status", partial: 'artifacts/fetch_status', locals: { artifact: @artifact, fetching: true })
+        render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_status", partial: "artifacts/fetch_status", locals: { artifact: @artifact, fetching: true })
       }
-      format.html { redirect_to project_artifact_path(@project, @artifact), notice: 'Fetching content...' }
+      format.html { redirect_to project_artifact_path(@project, @artifact), notice: "Fetching content..." }
     end
   end
 
@@ -88,7 +88,7 @@ class ArtifactsController < ApplicationController
       @artifact.add_tag(tag_name)
       respond_to do |format|
         format.turbo_stream {
-          render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_tags", partial: 'artifacts/tags', locals: { artifact: @artifact, project: @project })
+          render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_tags", partial: "artifacts/tags", locals: { artifact: @artifact, project: @project })
         }
         format.html { redirect_to project_artifact_path(@project, @artifact) }
       end
@@ -102,7 +102,7 @@ class ArtifactsController < ApplicationController
     @artifact.remove_tag(tag_name)
     respond_to do |format|
       format.turbo_stream {
-        render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_tags", partial: 'artifacts/tags', locals: { artifact: @artifact, project: @project })
+        render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_tags", partial: "artifacts/tags", locals: { artifact: @artifact, project: @project })
       }
       format.html { redirect_to project_artifact_path(@project, @artifact) }
     end

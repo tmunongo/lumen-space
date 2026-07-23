@@ -1,12 +1,12 @@
 module ApplicationHelper
   def format_date(date)
-    return '' unless date
+    return "" unless date
     diff = Time.current - date
-    if diff < 1.day then 'today'
-    elsif diff < 2.days then 'yesterday'
+    if diff < 1.day then "today"
+    elsif diff < 2.days then "yesterday"
     elsif diff < 7.days then "#{(diff / 1.day).floor}d ago"
     elsif diff < 30.days then "#{(diff / 7.days).floor}w ago"
-    else date.strftime('%b %-d, %Y')
+    else date.strftime("%b %-d, %Y")
     end
   end
 
@@ -15,8 +15,8 @@ module ApplicationHelper
   end
 
   def markdown_to_html(text)
-    return '' unless text.present?
-    renderer = Redcarpet::Render::HTML.new(hard_wrap: true, link_attributes: { target: '_blank' })
+    return "" unless text.present?
+    renderer = Redcarpet::Render::HTML.new(hard_wrap: true, link_attributes: { target: "_blank" })
     markdown = Redcarpet::Markdown.new(renderer, autolink: true, tables: true, fenced_code_blocks: true, strikethrough: true)
     markdown.render(text).html_safe
   end
@@ -40,13 +40,13 @@ module ApplicationHelper
   end
 
   def app_version
-    @app_version ||= ENV['APP_VERSION'].presence ||
-      (File.exist?(Rails.root.join('VERSION')) ? File.read(Rails.root.join('VERSION')).strip : '0.1.0')
+    @app_version ||= ENV["APP_VERSION"].presence ||
+      (File.exist?(Rails.root.join("VERSION")) ? File.read(Rails.root.join("VERSION")).strip : "0.1.0")
   end
 
   def app_build_date
-    @app_build_date ||= ENV['BUILD_DATE'].presence ||
-      (File.exist?(Rails.root.join('VERSION')) ? File.mtime(Rails.root.join('VERSION')).strftime('%b %d, %Y') : Time.current.strftime('%b %d, %Y'))
+    @app_build_date ||= ENV["BUILD_DATE"].presence ||
+      (File.exist?(Rails.root.join("VERSION")) ? File.mtime(Rails.root.join("VERSION")).strftime("%b %d, %Y") : Time.current.strftime("%b %d, %Y"))
   end
 
   private

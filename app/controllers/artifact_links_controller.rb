@@ -5,14 +5,14 @@ class ArtifactLinksController < ApplicationController
       respond_to do |format|
         format.turbo_stream {
           artifact = @link.source_artifact
-          render turbo_stream: turbo_stream.replace("artifact_#{artifact.id}_links", partial: 'artifacts/links', locals: { artifact: artifact, project: artifact.project })
+          render turbo_stream: turbo_stream.replace("artifact_#{artifact.id}_links", partial: "artifacts/links", locals: { artifact: artifact, project: artifact.project })
         }
         format.html { redirect_to project_artifact_path(@link.project, @link.source_artifact) }
       end
     else
       respond_to do |format|
-        format.turbo_stream { render turbo_stream: turbo_stream.replace('link-errors', html: "<p class='error'>#{@link.errors.full_messages.join(', ')}</p>") }
-        format.html { redirect_back fallback_location: root_path, alert: @link.errors.full_messages.join(', ') }
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("link-errors", html: "<p class='error'>#{@link.errors.full_messages.join(', ')}</p>") }
+        format.html { redirect_back fallback_location: root_path, alert: @link.errors.full_messages.join(", ") }
       end
     end
   end
@@ -23,7 +23,7 @@ class ArtifactLinksController < ApplicationController
     @link.destroy
     respond_to do |format|
       format.turbo_stream {
-        render turbo_stream: turbo_stream.replace("artifact_#{artifact.id}_links", partial: 'artifacts/links', locals: { artifact: artifact, project: artifact.project })
+        render turbo_stream: turbo_stream.replace("artifact_#{artifact.id}_links", partial: "artifacts/links", locals: { artifact: artifact, project: artifact.project })
       }
       format.html { redirect_back fallback_location: root_path }
     end

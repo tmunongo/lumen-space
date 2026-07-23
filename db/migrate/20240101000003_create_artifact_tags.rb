@@ -5,7 +5,7 @@ class CreateArtifactTags < ActiveRecord::Migration[8.1]
       t.string :name, null: false
       t.timestamps
     end
-    add_index :artifact_tags, [:artifact_id, :name], unique: true
+    add_index :artifact_tags, [ :artifact_id, :name ], unique: true
     add_index :artifact_tags, :name
   end
 end

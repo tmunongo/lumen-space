@@ -8,7 +8,7 @@ class CreateArtifactLinks < ActiveRecord::Migration[8.1]
       t.text :note
       t.timestamps
     end
-    add_index :artifact_links, [:source_artifact_id, :target_artifact_id], unique: true, name: 'idx_artifact_links_unique'
+    add_index :artifact_links, [ :source_artifact_id, :target_artifact_id ], unique: true, name: 'idx_artifact_links_unique'
     add_index :artifact_links, :source_artifact_id
     add_index :artifact_links, :target_artifact_id
     add_foreign_key :artifact_links, :artifacts, column: :source_artifact_id

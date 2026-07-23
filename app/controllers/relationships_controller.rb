@@ -36,7 +36,7 @@ class RelationshipsController < ApplicationController
 
   def compute_network(start, all_tags_map, all_artifacts)
     visited = Set.new
-    queue = [start]
+    queue = [ start ]
     network = []
 
     while queue.any?

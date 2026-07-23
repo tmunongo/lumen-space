@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'projects#index'
+  root "projects#index"
 
   resources :projects do
     member do
@@ -12,13 +12,13 @@ Rails.application.routes.draw do
         post :add_tag
         delete :remove_tag
       end
-      resources :highlights, controller: 'artifact_highlights', only: [:create, :destroy]
+      resources :highlights, controller: "artifact_highlights", only: [ :create, :destroy ]
     end
-    resources :relationships, only: [:index], controller: 'relationships'
+    resources :relationships, only: [ :index ], controller: "relationships"
   end
 
-  resources :artifact_links, only: [:create, :destroy]
+  resources :artifact_links, only: [ :create, :destroy ]
 
   # Health check
-  get 'up', to: 'rails/health#show', as: :rails_health_check
+  get "up", to: "rails/health#show", as: :rails_health_check
 end
