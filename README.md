@@ -86,7 +86,8 @@ services:
     ports:
       - "3000:80"
     environment:
-      RAILS_MASTER_KEY: "${RAILS_MASTER_KEY}"
+      # Optional custom secret key base for cookie/session encryption
+      SECRET_KEY_BASE: "${SECRET_KEY_BASE:-}"
       # Optional single-user basic auth
       LUMEN_USERNAME: "${LUMEN_USERNAME:-lumen}"
       LUMEN_PASSWORD: "${LUMEN_PASSWORD:-}"
@@ -98,12 +99,13 @@ volumes:
   lumen_storage:
 ```
 
-### 2. Create a `.env` file (in the same directory)
+### 2. Create a `.env` file (optional, in the same directory)
 
 ```dotenv
-RAILS_MASTER_KEY=<paste contents of config/master.key>
+# Optional: set basic auth credentials or custom secret key base
 LUMEN_USERNAME=your_username
 LUMEN_PASSWORD=a_strong_password
+SECRET_KEY_BASE=a_random_secret_key_string
 ```
 
 > **Tip:** If you're running behind a reverse proxy (Nginx, Caddy, Traefik) that terminates TLS, add `RAILS_SERVE_STATIC_FILES=true` to your environment.
@@ -146,10 +148,10 @@ docker pull ghcr.io/YOUR_HANDLE/lumen-rails:v1.2.3
 
 | Variable | Default | Description |
 |---|---|---|
-| `RAILS_MASTER_KEY` | — | **Required in production.** Contents of `config/master.key` |
+| `SECRET_KEY_BASE` | *(auto-fallback)* | Optional. Secret key for cookie/session encryption. A secure default is used if blank |
 | `LUMEN_USERNAME` | `lumen` | HTTP basic auth username (auth disabled if `LUMEN_PASSWORD` is blank) |
 | `LUMEN_PASSWORD` | _(blank)_ | HTTP basic auth password. Leave blank to disable auth |
-| `RAILS_ENV` | `development` | Set to `production` in Docker / server deployments |
+| `RAILS_ENV` | `production` | Set to `production` in Docker / server deployments |
 | `DATABASE_URL` | _(SQLite)_ | Override to use a different database adapter |
 | `PORT` | `80` (Docker) / `3000` (local) | Listening port |
 

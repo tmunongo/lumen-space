@@ -6,6 +6,10 @@ Rails.application.configure do
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
+  # Secret key base for encrypted cookies/sessions. Uses ENV variable if available,
+  # or falls back to a deterministic key for zero-config self-hosting deployment.
+  config.secret_key_base = ENV["SECRET_KEY_BASE"].presence || "lumen_space_default_secret_key_base_3b9f4a1c7d2e8f5a6b0c1d"
+
   # Eager load code on boot for better performance and memory savings (ignored by Rake tasks).
   config.eager_load = true
 
