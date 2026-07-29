@@ -29,4 +29,18 @@ export default class extends Controller {
       titleInput.value = urlInput.value
     }
   }
+
+  setPdfTitle(e) {
+    const urlInput = document.getElementById('pdf-url-input')
+    const titleInput = document.getElementById('pdf-title-hidden')
+    if (urlInput && titleInput) {
+      try {
+        const url = new URL(urlInput.value)
+        const filename = url.pathname.split('/').pop().replace(/\.pdf$/i, '').replace(/[-_]/g, ' ')
+        titleInput.value = filename || url.hostname || 'PDF Document'
+      } catch {
+        titleInput.value = urlInput.value || 'PDF Document'
+      }
+    }
+  }
 }

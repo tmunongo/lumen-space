@@ -1,6 +1,6 @@
 class ArtifactsController < ApplicationController
   before_action :set_project
-  before_action :set_artifact, only: [ :show, :edit, :update, :destroy, :fetch_content, :add_tag, :remove_tag ]
+  before_action :set_artifact, only: [ :show, :edit, :update, :destroy, :fetch_content, :add_tag, :remove_tag, :proxy_pdf ]
 
   def show
     @highlights = @artifact.highlights.order(:created_at)
@@ -75,6 +75,37 @@ class ArtifactsController < ApplicationController
         render turbo_stream: turbo_stream.replace("artifact_#{@artifact.id}_status", partial: "artifacts/fetch_status", locals: { artifact: @artifact, fetching: true })
       }
       format.html { redirect_to project_artifact_path(@project, @artifact), notice: "Fetching content..." }
+    end
+  end
+
+  def proxy_pdf
+    unless @artifact.pdf? && @artifact.source_url.present?
+      head :not_found and return
+    end
+
+    begin
+      response = HTTParty.get(
+        @artifact.source_url,
+        headers: {
+          "User-Agent" => "Mozilla/5.0 (compatible; LumenSpace/1.0)",
+          "Accept" => "application/pdf,*/*"
+        },
+        follow_redirects: true,
+        timeout: 30
+      )
+
+      unless response.success?
+        head :bad_gateway and return
+      end
+
+      content_type = response.headers["content-type"] || "application/pdf"
+      send_data response.body,
+        type: content_type.split(";").first.strip,
+        disposition: "inline",
+        filename: "document.pdf"
+    rescue => e
+      Rails.logger.error "proxy_pdf failed for artifact #{@artifact.id}: #{e.message}"
+      head :bad_gateway
     end
   end
 

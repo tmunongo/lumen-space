@@ -12,6 +12,7 @@ Rails.application.routes.draw do
         post :fetch_content
         post :add_tag
         delete :remove_tag
+        get :proxy_pdf
       end
       resources :highlights, controller: "artifact_highlights", only: [ :create, :destroy ]
     end

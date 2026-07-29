@@ -4,6 +4,7 @@
     <button class="add-form__tab" data-action="click->add-form#showTab" data-tab="note">📝 Note</button>
     <button class="add-form__tab" data-action="click->add-form#showTab" data-tab="quote">💬 Quote</button>
     <button class="add-form__tab" data-action="click->add-form#showTab" data-tab="markdown">📄 Doc</button>
+    <button class="add-form__tab" data-action="click->add-form#showTab" data-tab="pdf">📕 PDF</button>
   </div>
 
   <!-- Link tab -->
@@ -51,6 +52,18 @@
       <div class="form-stack">
         <input type="text" name="artifact[title]" placeholder="Document title..." class="input input--sm" required>
         <button type="submit" class="btn btn--primary btn--sm">Create Document</button>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- PDF tab -->
+  <div class="add-form__panel" data-add-form-target="panel" data-panel="pdf">
+    <%= form_with url: project_artifacts_path(project), data: { turbo_stream: true } do |f| %>
+      <input type="hidden" name="artifact[artifact_type]" value="pdf">
+      <div class="input-group">
+        <%= text_field_tag 'artifact[source_url]', nil, placeholder: 'Paste PDF URL...', class: 'input input--sm', id: 'pdf-url-input', type: 'url' %>
+        <input type="hidden" name="artifact[title]" id="pdf-title-hidden" value="PDF Document">
+        <button type="submit" class="btn btn--primary btn--sm" data-action="click->add-form#setPdfTitle">Add</button>
       </div>
     <% end %>
   </div>

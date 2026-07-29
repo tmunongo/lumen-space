@@ -1,5 +1,5 @@
 class Artifact < ApplicationRecord
-  TYPES = %w[web_page raw_link note quote image markdown].freeze
+  TYPES = %w[web_page raw_link note quote image markdown pdf].freeze
   LINK_TYPES = %w[related supports contradicts background quotes depends_on].freeze
 
   belongs_to :project
@@ -11,7 +11,7 @@ class Artifact < ApplicationRecord
   validates :title, presence: true
   validates :artifact_type, inclusion: { in: TYPES }
   validates :attribution, presence: true, if: -> { artifact_type == "quote" }
-  validates :source_url, presence: true, if: -> { %w[web_page raw_link].include?(artifact_type) }
+  validates :source_url, presence: true, if: -> { %w[web_page raw_link pdf].include?(artifact_type) }
 
   scope :by_project, ->(project_id) { where(project_id: project_id) }
   scope :by_type, ->(type) { where(artifact_type: type) }
@@ -43,6 +43,10 @@ class Artifact < ApplicationRecord
     %w[web_page raw_link].include?(artifact_type)
   end
 
+  def pdf?
+    artifact_type == "pdf"
+  end
+
   def reading_time_minutes
     return 0 unless content.present?
     text = ActionController::Base.helpers.strip_tags(content)
@@ -57,7 +61,8 @@ class Artifact < ApplicationRecord
       "note"      => "📝",
       "quote"     => "💬",
       "image"     => "🖼️",
-      "markdown"  => "📄"
+      "markdown"  => "📄",
+      "pdf"       => "📕"
     }[artifact_type] || "📁"
   end
 

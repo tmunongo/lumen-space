@@ -1,23 +1,30 @@
-<div class="reader" id="artifact-reader" data-controller="reader" data-artifact-id="<%= artifact.id %>">
-  <!-- Progress bar -->
-  <div class="reader__progress" data-reader-target="progress"></div>
-
-  <div class="reader__scroll" data-reader-target="scroll" data-action="scroll->reader#onScroll">
+<% if artifact.pdf? %>
+  <%# PDF: no progress bar, no scroll wrapper, no highlight toolbar - viewer manages its own scroll %>
+  <div class="reader reader--pdf" id="artifact-reader" data-artifact-id="<%= artifact.id %>">
     <%= render 'artifacts/reader_wrapper', artifact: artifact, project: project %>
   </div>
+<% else %>
+  <div class="reader" id="artifact-reader" data-controller="reader" data-artifact-id="<%= artifact.id %>">
+    <!-- Progress bar -->
+    <div class="reader__progress" data-reader-target="progress"></div>
 
-  <!-- Highlight toolbar -->
-  <div class="highlight-toolbar" data-reader-target="highlightToolbar" style="display:none;">
-    <%= form_with url: project_artifact_highlights_path(project, artifact), method: :post, data: { turbo_stream: true, 'reader-target': 'highlightForm' } do |f| %>
-      <%= f.hidden_field :artifact_highlight, value: '' %>
-      <input type="hidden" name="artifact_highlight[selected_text]" data-reader-target="selectedText">
-      <input type="hidden" name="artifact_highlight[style]" value="yellow">
-      <button type="submit" class="btn btn--highlight btn--yellow" title="Highlight">✏️ Highlight</button>
-      <div class="highlight-colors">
-        <% ArtifactHighlight::STYLES.each do |style| %>
-          <button type="button" class="highlight-color highlight-color--<%= style %>" data-action="click->reader#setHighlightStyle" data-style="<%= style %>"></button>
-        <% end %>
-      </div>
-    <% end %>
+    <div class="reader__scroll" data-reader-target="scroll" data-action="scroll->reader#onScroll">
+      <%= render 'artifacts/reader_wrapper', artifact: artifact, project: project %>
+    </div>
+
+    <!-- Highlight toolbar -->
+    <div class="highlight-toolbar" data-reader-target="highlightToolbar" style="display:none;">
+      <%= form_with url: project_artifact_highlights_path(project, artifact), method: :post, data: { turbo_stream: true, 'reader-target': 'highlightForm' } do |f| %>
+        <%= f.hidden_field :artifact_highlight, value: '' %>
+        <input type="hidden" name="artifact_highlight[selected_text]" data-reader-target="selectedText">
+        <input type="hidden" name="artifact_highlight[style]" value="yellow">
+        <button type="submit" class="btn btn--highlight btn--yellow" title="Highlight">✏️ Highlight</button>
+        <div class="highlight-colors">
+          <% ArtifactHighlight::STYLES.each do |style| %>
+            <button type="button" class="highlight-color highlight-color--<%= style %>" data-action="click->reader#setHighlightStyle" data-style="<%= style %>"></button>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
-</div>
+<% end %>

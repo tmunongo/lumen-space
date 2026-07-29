@@ -22,6 +22,8 @@
   <% else %>
     <p class="text-muted">Image file not found.</p>
   <% end %>
+<% when 'pdf' %>
+  <%= render 'artifacts/pdf_viewer', artifact: artifact, project: project %>
 <% else %>
   <% if artifact.content.present? %>
     <div class="web-content" data-controller="web-content">

@@ -20,6 +20,13 @@ class WebFetchJob < ApplicationJob
         return
       end
 
+      # Detect PDF by content-type or URL extension
+      content_type = response.headers["content-type"].to_s.downcase
+      if content_type.include?("application/pdf") || artifact.source_url.to_s.downcase.end_with?(".pdf")
+        handle_pdf(artifact)
+        return
+      end
+
       doc = Nokogiri::HTML(response.body)
 
       # Remove noise elements
@@ -50,6 +57,23 @@ class WebFetchJob < ApplicationJob
   end
 
   private
+
+  def handle_pdf(artifact)
+    # Extract a reasonable title from the URL path
+    uri = URI.parse(artifact.source_url) rescue nil
+    filename = uri ? File.basename(uri.path, ".pdf").humanize : "PDF Document"
+    title = filename.presence || "PDF Document"
+
+    artifact.update!(
+      title: title,
+      artifact_type: "pdf",
+      is_fetched: true
+    )
+
+    broadcast_updates(artifact)
+  rescue => e
+    Rails.logger.error "handle_pdf failed for artifact #{artifact.id}: #{e.message}"
+  end
 
   def extract_title(doc)
     [ doc.at_css("article h1"), doc.at_css("h1"), doc.at_css("title") ]

@@ -1,0 +1,50 @@
+<%# PDF Viewer — renders PDF via PDF.js through the Rails proxy %>
+<div class="pdf-viewer"
+     data-controller="pdf-viewer"
+     data-pdf-viewer-url-value="<%= proxy_pdf_project_artifact_path(project, artifact) %>"
+     data-pdf-viewer-title-value="<%= artifact.title %>">
+
+  <!-- Toolbar -->
+  <div class="pdf-viewer__toolbar" data-pdf-viewer-target="toolbar">
+    <div class="pdf-viewer__toolbar-left">
+      <button class="btn btn--ghost btn--sm" data-action="click->pdf-viewer#prevPage" data-pdf-viewer-target="prevBtn" disabled title="Previous page">
+        ←
+      </button>
+      <span class="pdf-viewer__page-info">
+        Page <span data-pdf-viewer-target="currentPage">—</span> of <span data-pdf-viewer-target="totalPages">—</span>
+      </span>
+      <button class="btn btn--ghost btn--sm" data-action="click->pdf-viewer#nextPage" data-pdf-viewer-target="nextBtn" disabled title="Next page">
+        →
+      </button>
+    </div>
+    <div class="pdf-viewer__toolbar-right">
+      <button class="btn btn--ghost btn--sm" data-action="click->pdf-viewer#zoomOut" title="Zoom out">−</button>
+      <span class="pdf-viewer__zoom-label" data-pdf-viewer-target="zoomLabel">100%</span>
+      <button class="btn btn--ghost btn--sm" data-action="click->pdf-viewer#zoomIn" title="Zoom in">+</button>
+      <%= link_to artifact.source_url, target: '_blank', class: 'btn btn--ghost btn--sm', title: 'Open original PDF' do %>
+        ↗ Original
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div class="pdf-viewer__loading" data-pdf-viewer-target="loading">
+    <div class="pdf-viewer__spinner"></div>
+    <span>Loading PDF…</span>
+  </div>
+
+  <!-- Error / fallback state -->
+  <div class="pdf-viewer__error" data-pdf-viewer-target="error" style="display:none;">
+    <div class="pdf-viewer__error-icon">📕</div>
+    <p class="pdf-viewer__error-msg" data-pdf-viewer-target="errorMsg">Unable to load PDF.</p>
+    <%= link_to artifact.source_url, target: '_blank', class: 'btn btn--primary' do %>
+      Open PDF in new tab ↗
+    <% end %>
+  </div>
+
+  <!-- Canvas container — pages rendered here, scroll events tracked for page indicator -->
+  <div class="pdf-viewer__pages"
+       data-pdf-viewer-target="pages"
+       data-action="scroll->pdf-viewer#onScroll"
+       style="display:none;"></div>
+</div>
