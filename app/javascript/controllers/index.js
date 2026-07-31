@@ -8,6 +8,7 @@ import LinkPickerController from "./link_picker_controller"
 import AddFormController from "./add_form_controller"
 import ExportModalController from "./export_modal_controller"
 import PdfViewerController from "./pdf_viewer_controller"
+import PasswordVisibilityController from "./password_visibility_controller"
 
 application.register("app", AppController)
 application.register("dropdown", DropdownController)
@@ -18,3 +19,4 @@ application.register("link-picker", LinkPickerController)
 application.register("add-form", AddFormController)
 application.register("export-modal", ExportModalController)
 application.register("pdf-viewer", PdfViewerController)
+application.register("password-visibility", PasswordVisibilityController)

@@ -21,6 +21,12 @@ Rails.application.routes.draw do
 
   resources :artifact_links, only: [ :create, :destroy ]
 
+  # Authentication
+  get "login", to: "sessions#new", as: :login
+  post "login", to: "sessions#create"
+  delete "logout", to: "sessions#destroy", as: :logout
+  get "logout", to: "sessions#destroy"
+
   # Health check
   get "up", to: "rails/health#show", as: :rails_health_check
 end

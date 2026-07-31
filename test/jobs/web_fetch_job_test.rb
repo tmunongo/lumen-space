@@ -15,7 +15,7 @@ class WebFetchJobTest < ActiveJob::TestCase
 
   test "perform updates artifact metadata and broadcasts turbo stream replace" do
     def HTTParty.get(url, **options)
-      Struct.new(:success?, :body).new(true, "<html><head><title>Example Page</title></head><body><main><p>Hello World</p></main></body></html>")
+      Struct.new(:success?, :body, :headers).new(true, "<html><head><title>Example Page</title></head><body><main><p>Hello World</p></main></body></html>", { "content-type" => "text/html" })
     end
 
     assert_broadcasts(@project.to_gid_param, 2) do

@@ -2,6 +2,7 @@ require "test_helper"
 
 class ProjectsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    sign_in_as
     @project = Project.create!(name: "Export Test Project #{SecureRandom.hex(4)}")
     @artifact = Artifact.create!(
       project: @project,

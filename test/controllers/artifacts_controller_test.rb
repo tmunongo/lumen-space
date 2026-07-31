@@ -2,6 +2,7 @@ require "test_helper"
 
 class ArtifactsControllerTest < ActionDispatch::IntegrationTest
   setup do
+    sign_in_as
     @project = Project.create!(name: "Test Project")
   end
 

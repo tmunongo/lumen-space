@@ -1,0 +1,110 @@
+<% content_for :title, 'Sign In' %>
+<div class="auth-page">
+  <!-- Dynamic ambient background elements -->
+  <div class="auth-bg">
+    <div class="auth-bg__grid"></div>
+    <div class="auth-bg__glow auth-bg__glow--1"></div>
+    <div class="auth-bg__glow auth-bg__glow--2"></div>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-card__glow-bar"></div>
+    
+    <div class="auth-card__header">
+      <div class="auth-brand-badge">
+        <span class="auth-brand-badge__icon">◉</span>
+        <span class="auth-brand-badge__pulse"></span>
+      </div>
+      <h1 class="auth-card__title">Lumen Space</h1>
+      <p class="auth-card__subtitle">Sign in to your research workspace</p>
+    </div>
+
+    <% if flash[:alert].present? %>
+      <div class="auth-alert auth-alert--error" role="alert">
+        <svg class="auth-alert__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span class="auth-alert__text"><%= flash[:alert] %></span>
+      </div>
+    <% end %>
+
+    <% if flash[:notice].present? %>
+      <div class="auth-alert auth-alert--notice" role="status">
+        <svg class="auth-alert__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <span class="auth-alert__text"><%= flash[:notice] %></span>
+      </div>
+    <% end %>
+
+    <%= form_with url: login_path, method: :post, local: true, class: "auth-form" do |f| %>
+      <% if params[:return_to].present? %>
+        <%= f.hidden_field :return_to, value: params[:return_to] %>
+      <% end %>
+
+      <div class="auth-field">
+        <label for="username" class="auth-field__label">
+          <span>Username</span>
+        </label>
+        <div class="auth-input-group">
+          <svg class="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <%= f.text_field :username, value: params[:username] || "lumen", id: "username", class: "auth-input", placeholder: "Username", required: true, autofocus: true, autocomplete: "username" %>
+        </div>
+      </div>
+
+      <div class="auth-field" data-controller="password-visibility">
+        <div class="auth-field__header">
+          <label for="password" class="auth-field__label">
+            <span>Password</span>
+          </label>
+        </div>
+        <div class="auth-input-group">
+          <svg class="auth-input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <%= f.password_field :password, id: "password", class: "auth-input auth-input--has-toggle", placeholder: "••••••••", required: true, autocomplete: "current-password", data: { "password-visibility-target": "input" } %>
+          <button type="button" class="auth-password-toggle" data-action="click->password-visibility#toggle" data-password-visibility-target="button" aria-label="Toggle password visibility" tabindex="-1">
+            <svg class="icon-eye-show" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <svg class="icon-eye-hide" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="auth-submit-btn">
+        <span>Sign in to workspace</span>
+        <svg class="auth-submit-btn__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    <% end %>
+
+    <div class="auth-card__hint">
+      <span class="auth-hint-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span>Default credentials: <code>lumen</code> / <code>lumen</code></span>
+      </span>
+    </div>
+
+    <div class="auth-card__footer">
+      <span class="auth-card__footer-text">Lumen Space &bull; Deep Research & Structured Thinking</span>
+    </div>
+  </div>
+</div>
