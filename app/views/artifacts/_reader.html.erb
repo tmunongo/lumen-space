@@ -13,9 +13,8 @@
     </div>
 
     <!-- Highlight toolbar -->
-    <div class="highlight-toolbar" data-reader-target="highlightToolbar" style="display:none;">
-      <%= form_with url: project_artifact_highlights_path(project, artifact), method: :post, data: { turbo_stream: true, 'reader-target': 'highlightForm' } do |f| %>
-        <%= f.hidden_field :artifact_highlight, value: '' %>
+    <div class="highlight-toolbar" data-reader-target="highlightToolbar" data-action="mousedown->reader#preventDeselect" style="display:none;">
+      <%= form_with url: project_artifact_highlights_path(project, artifact), method: :post, data: { turbo_stream: true, 'reader-target': 'highlightForm', action: 'turbo:submit-end->reader#onHighlightSubmitted' } do |f| %>
         <input type="hidden" name="artifact_highlight[selected_text]" data-reader-target="selectedText">
         <input type="hidden" name="artifact_highlight[style]" value="yellow">
         <button type="submit" class="btn btn--highlight btn--yellow" title="Highlight">✏️ Highlight</button>

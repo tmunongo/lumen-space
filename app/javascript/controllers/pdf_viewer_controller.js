@@ -28,6 +28,16 @@ export default class extends Controller {
     }
   }
 
+  get storageKey() {
+    return this.urlValue ? `lumen_pdf_page_${this.urlValue}` : null
+  }
+
+  saveCurrentPage() {
+    if (this.storageKey) {
+      localStorage.setItem(this.storageKey, this._currentPage.toString())
+    }
+  }
+
   async loadPdf() {
     try {
       const loadingTask = pdfjsLib.getDocument({
@@ -49,6 +59,18 @@ export default class extends Controller {
       // Render all pages sequentially into canvases
       for (let i = 1; i <= this._totalPages; i++) {
         await this.renderPage(i)
+      }
+
+      // Restore saved page position
+      const savedPage = this.storageKey ? localStorage.getItem(this.storageKey) : null
+      if (savedPage) {
+        const pageNum = parseInt(savedPage, 10)
+        if (pageNum > 1 && pageNum <= this._totalPages) {
+          this._currentPage = pageNum
+          this.updatePageInfo()
+          this.updateNavButtons()
+          this.scrollToPage(pageNum)
+        }
       }
     } catch (err) {
       console.error("PDF.js load error:", err)
@@ -98,6 +120,7 @@ export default class extends Controller {
       this._currentPage = closestPage
       this.updatePageInfo()
       this.updateNavButtons()
+      this.saveCurrentPage()
     }
   }
 
@@ -107,6 +130,7 @@ export default class extends Controller {
     this.scrollToPage(this._currentPage)
     this.updatePageInfo()
     this.updateNavButtons()
+    this.saveCurrentPage()
   }
 
   nextPage() {
@@ -115,6 +139,7 @@ export default class extends Controller {
     this.scrollToPage(this._currentPage)
     this.updatePageInfo()
     this.updateNavButtons()
+    this.saveCurrentPage()
   }
 
   zoomIn() {
